@@ -24,7 +24,9 @@ function Page() {
   useEffect(() => {
     const fetchData = async () => {
       if (!input) return;
-      const res = await fetch(`/api/search?q=${input}`);
+      const res = await fetch(
+        `https://blitzapi.shadcn-themes.workers.dev/api/search?q=${input}`
+      );
       const data = (await res.json()) as Result;
       setResult(data);
     };

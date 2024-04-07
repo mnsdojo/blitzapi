@@ -3,7 +3,8 @@ export const runtime = "edge";
 import { Hono } from "hono";
 import { handle } from "hono/vercel";
 import { env } from "hono/adapter";
-import { Redis } from "@upstash/redis";
+import { Redis } from "@upstash/redis/cloudflare";
+import { cors } from "hono/cors";
 
 const app = new Hono().basePath("/api");
 
@@ -11,6 +12,8 @@ type EnvConfig = {
   UPSTASH_REDIS_REST_TOKEN: string;
   UPSTASH_REDIS_REST_URL: string;
 };
+
+app.use("/*", cors());
 
 app.get("/search", async (c) => {
   try {
@@ -21,6 +24,7 @@ app.get("/search", async (c) => {
       url: UPSTASH_REDIS_REST_URL,
     });
     const start = performance.now();
+    //  ------------------------------------------- Let Him Cook
     const query = c.req.query("q")?.toUpperCase();
 
     if (!query) {
@@ -48,11 +52,13 @@ app.get("/search", async (c) => {
     });
   } catch (error) {
     console.log(error);
-    return c.json({ results: [], message: "Something went wrong!" });
+    return c.json(
+      { results: [], message: "Something went wrong!" },
+      { status: 500 }
+    );
   }
 });
 
 export const GET = handle(app);
-export const POST = handle(app);
 
 export default app as never;
