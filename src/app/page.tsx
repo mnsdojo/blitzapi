@@ -65,6 +65,15 @@ function Page() {
               ) : null}
             </CommandList>
           </Command>
+
+          {result?.results ? (
+            <div className="h-px w-full bg-zinc-200 mt-5">
+              <p className="p-2 text-xs text-zinc-500">
+                Found {result?.results.length} results in{" "}
+                {result?.duration.toFixed(0)}ms
+              </p>
+            </div>
+          ) : null}
         </div>
       </div>
       <footer className="fixed bottom-0 w-full   text-center py-4">
